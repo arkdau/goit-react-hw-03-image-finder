@@ -8,9 +8,11 @@ class Button extends Component {
   };
   render() {
     return (
+      <div className={css.container}>
       <button className={css.Button} onClick={this.handleOnClick}>
         Load more
       </button>
+      </div>
     );
   }
 }

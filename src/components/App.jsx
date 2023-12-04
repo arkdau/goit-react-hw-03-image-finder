@@ -20,22 +20,23 @@ class App extends Component {
     isLoading: false,
     errorMsg: "",
     totalHits: 0,
-    tatalPage: 0,
+    totalPage: 0,
     page: 0,
     query: "",
   };
 
-  setTotalHits(total) {
-    this.setState({
-      totalHits: total,
-    });
-    this.setTotalPage();
-  }
-  setTotalPage() {
-    const totalPage = Math.ceil(this.totalHits / 40);
-    this.setState({
-      totalPage: totalPage,
-    });
+  // setTotalHits(total) {
+  //   // this.setState({
+  //   //   totalHits: total,
+  //   // });
+  //   this.setTotalPage();
+  // }
+  setTotalPage(totalHits) {
+    const totalPage = Math.ceil(totalHits / 12);
+    return totalPage;
+    // this.setState({
+    //   totalPage: totalPage,
+    // });
   }
   // nextPage() {
   //   if (this.state.page < this.state.tatalPage) {
@@ -51,23 +52,35 @@ class App extends Component {
   //   return this.state.page;
   // }
 
+  // nextPage() {
+  //   if (this.state.page < this.state.totalPage) {
+  //     let page = this.state.page;
+  //     this.setState({
+  //       page: ++page,
+  //     });
+  //   } else {
+  //     this.setState({
+  //       page: 1,
+  //     });
+  //   }
+  //   return this.state.page;
+  // }
+
   nextPage() {
-    if (this.state.page < 12) {
-      let page = this.state.page;
-      this.setState({
-        page: ++page,
-      });
+    let pageTemp = this.state.page;
+    if (this.state.page < this.state.totalPage) {
+      pageTemp += 1;
     } else {
-      this.setState({
-        page: 1,
-      });
+      pageTemp = 1;
     }
-    return this.state.page;
+    this.setState({
+      page: pageTemp,
+    });
+    return pageTemp;
   }
 
   getTotalPage() {
-    this.setTotalPage();
-    return this.state.tatalPage;
+    return this.setTotalPage(this.state.totalHits);
   }
   getPage() {
     return this.state.page;
@@ -101,7 +114,9 @@ class App extends Component {
       console.log("query: ", q);
       console.log("page: ", page);
       const images = await fetchGetAllItems(q, page);
-      console.log("images: ", images.hits);
+      console.log("images: ", images);
+
+      // const totalPage = this.setTotalPage(images.totalHits)
       // const imageSum = images.hits.map((image) => {
       // return this.state.images.push(image);
       // });
@@ -121,8 +136,13 @@ class App extends Component {
       // let imageSum = this.state.images;
       // imageSum.push(images.hits);
       console.log("imageSum: ", imageSum);
+      console.log("totalHits: ", images.totalHits);
+      let maxPages = this.setTotalPage(images.totalHits);
+      console.log("totalPage: ", maxPages);
       this.setState({
         images: imageSum,
+        totalHits: images.totalHits,
+        totalPage: maxPages,
       });
       // console.log(articles.hits);
     } catch (err) {
@@ -133,7 +153,9 @@ class App extends Component {
     } finally {
       console.log("stat-query: ", this.state.query);
       console.log("state-page: ", this.state.page);
-      console.log("state-images.hits: ", this.state.images.hits);
+      console.log("state-images.hits: ", this.state.images);
+      console.log("state-totalHits: ", this.state.totalHits);
+      console.log("state-totalPage: ", this.state.totalPage);
       this.setState({
         isLoading: false,
       });
