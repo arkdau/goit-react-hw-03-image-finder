@@ -4,6 +4,7 @@ import SearchBar from "./SearchBar/SearchBar";
 import Images from "./ImageGallery/Images";
 import Loader from "./Loader/Loader";
 import Button from "./Button/Button";
+import Modal from "./Modal/Modal";
 
 const DEFAULT_QUERY = "react";
 
@@ -13,6 +14,9 @@ class App extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.nextPage = this.nextPage.bind(this);
     this.getPage = this.getPage.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.selectImage = this.selectImage.bind(this);
   }
 
   state = {
@@ -23,48 +27,14 @@ class App extends Component {
     totalPage: 0,
     page: 0,
     query: "",
+    show: false,
+    imageSelect: "",
   };
 
-  // setTotalHits(total) {
-  //   // this.setState({
-  //   //   totalHits: total,
-  //   // });
-  //   this.setTotalPage();
-  // }
   setTotalPage(totalHits) {
     const totalPage = Math.ceil(totalHits / 12);
     return totalPage;
-    // this.setState({
-    //   totalPage: totalPage,
-    // });
   }
-  // nextPage() {
-  //   if (this.state.page < this.state.tatalPage) {
-  //     let page = this.state.page;
-  //     this.setState({
-  //       page: ++page,
-  //     });
-  //   } else {
-  //     this.setState({
-  //       page: 1,
-  //     });
-  //   }
-  //   return this.state.page;
-  // }
-
-  // nextPage() {
-  //   if (this.state.page < this.state.totalPage) {
-  //     let page = this.state.page;
-  //     this.setState({
-  //       page: ++page,
-  //     });
-  //   } else {
-  //     this.setState({
-  //       page: 1,
-  //     });
-  //   }
-  //   return this.state.page;
-  // }
 
   nextPage() {
     let pageTemp = this.state.page;
@@ -86,11 +56,6 @@ class App extends Component {
     return this.state.page;
   }
 
-  // constructor(props) {
-  //   super(props);
-  //   this.fetchData = this.fetchData.bind(this);
-  // }
-
   componentDidMount() {
     this.fetchData(DEFAULT_QUERY);
   }
@@ -100,6 +65,7 @@ class App extends Component {
     if (this.state.page !== prevState.page) {
       this.fetchData(this.state.query, this.state.page);
     }
+    console.log("selectImage: ", this.state.imageSelect);
   }
 
   async fetchData(q, page) {
@@ -116,12 +82,6 @@ class App extends Component {
       const images = await fetchGetAllItems(q, page);
       console.log("images: ", images);
 
-      // const totalPage = this.setTotalPage(images.totalHits)
-      // const imageSum = images.hits.map((image) => {
-      // return this.state.images.push(image);
-      // });
-
-      // this.state.images.push(images.hits);
       if (page === undefined) {
         this.setState({
           images: [],
@@ -133,8 +93,6 @@ class App extends Component {
       } else {
         imageSum = [...this.state.images, ...images.hits];
       }
-      // let imageSum = this.state.images;
-      // imageSum.push(images.hits);
       console.log("imageSum: ", imageSum);
       console.log("totalHits: ", images.totalHits);
       let maxPages = this.setTotalPage(images.totalHits);
@@ -144,7 +102,6 @@ class App extends Component {
         totalHits: images.totalHits,
         totalPage: maxPages,
       });
-      // console.log(articles.hits);
     } catch (err) {
       console.error(err.message);
       this.setState({
@@ -162,16 +119,42 @@ class App extends Component {
     }
   }
 
+  showModal = () => {
+    this.setState({ show: true });
+  };
+
+  hideModal = () => {
+    this.setState({ show: false });
+  };
+
+  selectImage = (src) => {
+    this.setState({
+      imageSelect: src,
+    });
+  };
+
   render() {
     return (
       <div className="App">
-        
         <SearchBar onSubmit={this.fetchData} />
         {this.state.isLoading && <Loader />}
         {this.state.errorMsg && (
           <div className="error">{this.state.errorMsg}</div>
         )}
-        {!this.state.errorMsg && <Images data={this.state.images} />}
+        <Modal show={this.state.show} handleClose={this.hideModal}>
+          <div class="overlay">
+            <div class="modal">
+              <img src={this.state.imageSelect} alt="" width="800" height="auto" />
+            </div>
+          </div>
+        </Modal>
+        {!this.state.errorMsg && (
+          <Images
+            data={this.state.images}
+            selectImage={this.selectImage}
+            showModal={this.showModal}
+          />
+        )}
         {
           <Button
             onClick={this.fetchData}
@@ -180,26 +163,10 @@ class App extends Component {
             query={this.state.query}
           />
         }
+        {/*<button type="button" onClick={this.showModal}>Open</button>*/}
       </div>
     );
   }
 }
 
 export default App;
-
-// export const App = () => {
-//   return (
-//     <div
-//       style={{
-//         height: '100vh',
-//         display: 'flex',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         fontSize: 40,
-//         color: '#010101'
-//       }}
-//     >
-//       React homework template
-//     </div>
-//   );
-// };
