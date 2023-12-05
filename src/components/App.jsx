@@ -17,6 +17,7 @@ class App extends Component {
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.selectImage = this.selectImage.bind(this);
+    this.escspePress = this.escspePress.bind(this);
   }
 
   state = {
@@ -58,6 +59,13 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchData(DEFAULT_QUERY);
+    // document.body.addEventListener("keydown", this.escspePress);
+    // document.addEventListener('keydown', this.escspePress, false);
+  }
+
+  componentWillUnmount() {
+    // document.removeEventListener('keydown', this.escspePress, false);
+    // document.body.removeEventListener('keydown', this.escspePress);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -133,6 +141,17 @@ class App extends Component {
     });
   };
 
+  // Close modal window
+  escspePress(e) {
+    e.preventDefault();
+    if (e.key === "Escape") {
+      this.hideModal();
+      console.log(
+        "event (keydown, escspePress) - listener was removed from body",
+      );
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -141,10 +160,19 @@ class App extends Component {
         {this.state.errorMsg && (
           <div className="error">{this.state.errorMsg}</div>
         )}
-        <Modal show={this.state.show} handleClose={this.hideModal}>
+        <Modal
+          show={this.state.show}
+          handleClose={this.hideModal}
+          escape={this.escspePress}
+        >
           <div class="overlay">
             <div class="modal">
-              <img src={this.state.imageSelect} alt="" width="800" height="auto" />
+              <img
+                src={this.state.imageSelect}
+                alt=""
+                width="800"
+                height="auto"
+              />
             </div>
           </div>
         </Modal>
@@ -155,14 +183,15 @@ class App extends Component {
             showModal={this.showModal}
           />
         )}
-        {
-          <Button
-            onClick={this.fetchData}
-            next={this.nextPage}
-            page={this.getPage}
-            query={this.state.query}
-          />
-        }
+        {(this.state.totalPage > 1) &&
+          (
+            <Button
+              onClick={this.fetchData}
+              next={this.nextPage}
+              page={this.getPage}
+              query={this.state.query}
+            />
+          )}
         {/*<button type="button" onClick={this.showModal}>Open</button>*/}
       </div>
     );
