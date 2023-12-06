@@ -2,18 +2,6 @@ import React, { Component } from "react";
 // import PropTypes from "prop-types";
 import css from "./Modal.module.css";
 
-// class Modal extends Component {
-//   render() {
-//     return (
-//       <div class="overlay">
-//         <div class="modal">
-//           <img src="" alt="" />
-//         </div>
-//       </div>
-//     );
-//   }
-// }
-
 // export default Modal;
 
 class Modal extends Component {
@@ -26,7 +14,6 @@ class Modal extends Component {
 
   componentDidMount() {
     this.devReference.current.focus();
-    // this.devReference.current.addEventListener("keydown", this.props.escspe);
   }
 
   componentDidUpdate() {
@@ -40,7 +27,7 @@ class Modal extends Component {
         ref={this.devReference}
         className={css[this.showHideClassName]}
         onClick={this.props.handleClose}
-        tabIndex={0}
+        tabIndex={-1}
         onKeyDown={this.props.escape}
       >
         <section className={css["modal-main"]}>

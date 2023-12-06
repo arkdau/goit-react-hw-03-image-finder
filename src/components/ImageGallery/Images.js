@@ -8,33 +8,22 @@ class ImageGallery extends Component {
     evt.preventDefault();
 
     const elem = evt.target;
-    const src = elem.currentSrc;
-    console.log("src: ", src);
+    // const src = elem.currentSrc;
+    const largeImageURL = elem.dataset.scr;
+    // console.log('elem: ', elem);
+    // console.log('largeImageURL: ', largeImageURL);
 
     if (elem.tagName === "IMG") {
-      // create modal
-      // const instance = basicLightbox.create(`
-      //   <div class="overlay">
-      //     <div class="modal">
-      //       <img src=${src} width="1280" height=auto>
-      //     </div>
-      //   </div>
-      // `);
-      // instance.show();
-      this.props.selectImage(src);
+      this.props.selectImage(largeImageURL);
       this.props.showModal();
     }
   });
   render() {
     return (
       <ul className={css.ImageGallery} onClick={this.handleOnClick}>
-        {this.props.data.map((image) => (
-          <ImageGalleryItem
-            key={image.id}
-            ImageURL={image.webformatURL}
-            ImageLargeURL={image.largeImageURL}
-          />
-        ))}
+        <ImageGalleryItem
+          data={this.props.data}
+        />
       </ul>
     );
   }

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import css from "./SearchBar.module.css";
 
 class SearchBar extends Component {
-
   constructor(props) {
     super(props);
     this.handleKeyUp = this.handleKeyUp.bind(this);
@@ -19,15 +18,10 @@ class SearchBar extends Component {
     evt.preventDefault();
     const form = evt.currentTarget;
     const searchText = form.elements.searchInput.value;
-    // const number = form.elements.number.value;
-    console.log("onSubmit: ", searchText);
 
     if (searchText === "") {
       alert("search text - empty field.\nComplete the missing data.");
     } else {
-      // console.log('state-query: ', this.state.query);
-      // console.log('state-page: ', this.state.page);
-
       this.props.onSubmit(searchText, 1);
       form.reset();
     }
@@ -54,11 +48,6 @@ class SearchBar extends Component {
           />
         </form>
       </header>
-      // <input
-      //   className={css.query}
-      //   placeholder={this.props.placeholder}
-      //   onKeyUp={this.handleKeyUp}
-      // />
     );
   }
 }

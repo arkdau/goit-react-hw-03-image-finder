@@ -40,7 +40,7 @@ const BASE_API_URL = 'https://pixabay.com/api';
           `Network response was not OK - HTTP error: ${response.status}`,
         );
       }
-      console.log('response: ', response);
+      // console.log('response: ', response);
       const data = await response.json();
       // debugger;
       return data;

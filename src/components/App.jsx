@@ -1,4 +1,5 @@
 import { Component } from "react";
+import css from "./styles.css";
 import fetchGetAllItems from "./services/PixabayAPI";
 import SearchBar from "./SearchBar/SearchBar";
 import Images from "./ImageGallery/Images";
@@ -6,7 +7,7 @@ import Loader from "./Loader/Loader";
 import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 
-const DEFAULT_QUERY = "react";
+const DEFAULT_QUERY = "";
 
 class App extends Component {
   constructor(props) {
@@ -59,21 +60,16 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchData(DEFAULT_QUERY);
-    // document.body.addEventListener("keydown", this.escspePress);
-    // document.addEventListener('keydown', this.escspePress, false);
   }
 
   componentWillUnmount() {
-    // document.removeEventListener('keydown', this.escspePress, false);
-    // document.body.removeEventListener('keydown', this.escspePress);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("App-componentDidUpdate page: ", this.state.page);
     if (this.state.page !== prevState.page) {
       this.fetchData(this.state.query, this.state.page);
     }
-    console.log("selectImage: ", this.state.imageSelect);
+    // console.log("selectImage: ", this.state.imageSelect);
   }
 
   async fetchData(q, page) {
@@ -85,12 +81,10 @@ class App extends Component {
         page: page,
         query: q,
       });
-      console.log("query: ", q);
-      console.log("page: ", page);
       const images = await fetchGetAllItems(q, page);
-      console.log("images: ", images);
+      // console.log("images: ", images);
 
-      if (page === undefined) {
+      if (page === undefined || page === 1) {
         this.setState({
           images: [],
         });
@@ -101,10 +95,7 @@ class App extends Component {
       } else {
         imageSum = [...this.state.images, ...images.hits];
       }
-      console.log("imageSum: ", imageSum);
-      console.log("totalHits: ", images.totalHits);
       let maxPages = this.setTotalPage(images.totalHits);
-      console.log("totalPage: ", maxPages);
       this.setState({
         images: imageSum,
         totalHits: images.totalHits,
@@ -116,11 +107,6 @@ class App extends Component {
         errorMsg: err.message,
       });
     } finally {
-      console.log("stat-query: ", this.state.query);
-      console.log("state-page: ", this.state.page);
-      console.log("state-images.hits: ", this.state.images);
-      console.log("state-totalHits: ", this.state.totalHits);
-      console.log("state-totalPage: ", this.state.totalPage);
       this.setState({
         isLoading: false,
       });
@@ -146,9 +132,7 @@ class App extends Component {
     e.preventDefault();
     if (e.key === "Escape") {
       this.hideModal();
-      console.log(
-        "event (keydown, escspePress) - listener was removed from body",
-      );
+      this.selectImage('');
     }
   }
 
@@ -165,13 +149,11 @@ class App extends Component {
           handleClose={this.hideModal}
           escape={this.escspePress}
         >
-          <div class="overlay">
-            <div class="modal">
+          <div className={css.Overlay}>
+            <div className={css.Modal}>
               <img
                 src={this.state.imageSelect}
                 alt=""
-                width="800"
-                height="auto"
               />
             </div>
           </div>
