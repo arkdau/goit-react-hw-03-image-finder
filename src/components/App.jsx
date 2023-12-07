@@ -19,6 +19,7 @@ class App extends Component {
     this.hideModal = this.hideModal.bind(this);
     this.selectImage = this.selectImage.bind(this);
     this.escspePress = this.escspePress.bind(this);
+    this.Submit = this.Submit.bind(this);
   }
 
   state = {
@@ -132,14 +133,22 @@ class App extends Component {
     e.preventDefault();
     if (e.key === "Escape") {
       this.hideModal();
-      this.selectImage('');
+      this.selectImage("");
     }
+  }
+
+  Submit(q, page) {
+    // this.fetchData();
+    this.setState({
+      query: q,
+      page: page,
+    });
   }
 
   render() {
     return (
       <div className="App">
-        <SearchBar onSubmit={this.fetchData} />
+        <SearchBar onSubmit={this.Submit} />
         {this.state.isLoading && <Loader />}
         {this.state.errorMsg && (
           <div className="error">{this.state.errorMsg}</div>
@@ -168,13 +177,9 @@ class App extends Component {
         {(this.state.totalPage > 1) &&
           (
             <Button
-              onClick={this.fetchData}
               next={this.nextPage}
-              page={this.getPage}
-              query={this.state.query}
             />
           )}
-        {/*<button type="button" onClick={this.showModal}>Open</button>*/}
       </div>
     );
   }
